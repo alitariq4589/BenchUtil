@@ -5,9 +5,17 @@ node('Runner2'){
             echo -e "[jenkinsfile INFO]: Compiling for x86_64 architecture\n"
             make
             echo -e "[jenkinsfile INFO]: Running benchmark for Integer Operations Per Second\n"
-            ./iops64
+            echo "1" | ./iops64 # This passes the number of processor(s) as '1' to C script.
             echo -e "[jenkinsfile INFO]: Running benchmark for Floating point Operations Per Second\n"
-            ./flops64
+            echo "1"|./flops64
+        '''
+    }
+    
+    stage ('*** Cleaning ***'){
+        sh'''#!\bin\bash
+            echo -e "[jenkinsfile INFO]: Cleaning...\n"
+            make clean
+            echo -e "[jenkinsfile INFO]: End of Job"
         '''
     }
     stage ('*** Test on riscv64 (qemu) ***'){
@@ -15,9 +23,9 @@ node('Runner2'){
             echo -e "[jenkinsfile INFO]: Compiling for riscv_64 architecture\n"
             make
             echo -e "[jenkinsfile INFO]: Running benchmark for Integer Operations Per Seconds\n"
-            qemu-riscv64 iops64
+            echo "1" | qemu-riscv64 iops64
             echo -e "[jenkinfile INFO]: Running benchmark for Floating point Operations Per Seconds\n"
-            qemu-riscv64 flops64
+            echo "1" | qemu-riscv64 flops64
        '''
     }
     stage ('*** Cleaning ***'){
