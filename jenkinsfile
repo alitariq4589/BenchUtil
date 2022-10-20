@@ -13,15 +13,15 @@ node('Runner2'){
     
     stage ('*** Cleaning ***'){
         sh'''#!/bin/bash
-            echo -e "[jenkinsfile INFO]: Cleaning...\n"
+            echo -e "[jenkinsfile INFO]: Cleaning for next benchmark...\n"
             make clean
-            echo -e "[jenkinsfile INFO]: End of Job"
+            echo -e "[jenkinsfile INFO]: Cleaning Complete"
         '''
     }
     stage ('*** Test on riscv64 (qemu) ***'){
        sh'''#!/bin/bash
             echo -e "[jenkinsfile INFO]: Compiling for riscv_64 architecture\n"
-            make
+            make CC=riscv64-unknown-linux-gnu-gcc 
             echo -e "[jenkinsfile INFO]: Running benchmark for Integer Operations Per Seconds\n"
             echo "1" | qemu-riscv64 iops64
             echo -e "[jenkinfile INFO]: Running benchmark for Floating point Operations Per Seconds\n"
@@ -29,7 +29,7 @@ node('Runner2'){
        '''
     }
     stage ('*** Cleaning ***'){
-        sh'''#!\bin\bash
+        sh'''#!/bin/bash
             echo -e "[jenkinsfile INFO]: Cleaning...\n"
             make clean
             echo -e "[jenkinsfile INFO]: End of Job"
