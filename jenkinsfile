@@ -1,5 +1,12 @@
 node('Runner2'){
     checkout scm
+    stage ('*** Cleaning ***'){
+        sh'''#!/bin/bash
+            echo -e "[jenkinsfile INFO]: Cleaning  previous benchmarks (if any)...\n"
+            make clean
+            echo -e "[jenkinsfile INFO]: Cleaning Complete !"
+        '''
+    }
     stage ('*** Test on x86_64 ***'){
         sh'''#!/bin/bash
             echo -e "[jenkinsfile INFO]: Compiling for x86_64 architecture\n"
@@ -15,7 +22,7 @@ node('Runner2'){
         sh'''#!/bin/bash
             echo -e "[jenkinsfile INFO]: Cleaning for next benchmark...\n"
             make clean
-            echo -e "[jenkinsfile INFO]: Cleaning Complete"
+            echo -e "[jenkinsfile INFO]: Cleaning Complete !"
         '''
     }
     stage ('*** Test on riscv64 (qemu) ***'){
