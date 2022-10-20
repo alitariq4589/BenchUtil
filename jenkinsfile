@@ -12,7 +12,7 @@ node('Runner2'){
     }
     
     stage ('*** Cleaning ***'){
-        sh'''#!\bin\bash
+        sh'''#!/bin/bash
             echo -e "[jenkinsfile INFO]: Cleaning...\n"
             make clean
             echo -e "[jenkinsfile INFO]: End of Job"
