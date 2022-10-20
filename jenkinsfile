@@ -35,4 +35,9 @@ node('Runner2'){
             echo -e "[jenkinsfile INFO]: End of Job"
         '''
     }
+    post {
+        always{
+            archiveArtifacts artifacts:'*.log'
+        }
+    }
 } 
