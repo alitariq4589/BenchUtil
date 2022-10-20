@@ -43,8 +43,6 @@ node('Runner2'){
         '''
     }
     stage ('*** Archiving Artifacts***') {
-        always{
-            archiveArtifacts artifacts:'*.log'
-        }
+            archiveArtifacts artifacts:'*.log', onlyIfSuccessful: true
     }
 } 
