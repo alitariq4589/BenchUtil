@@ -23,9 +23,9 @@ node('Runner2'){
             echo -e "[jenkinsfile INFO]: Compiling for riscv_64 architecture\n"
             make CC=riscv64-unknown-linux-gnu-gcc 
             echo -e "[jenkinsfile INFO]: Running benchmark for Integer Operations Per Seconds\n"
-            cat $(echo "1" | qemu-riscv64 iops64) > riscv64_iops.log
+            cat $(echo "1" | qemu-riscv64 -L $RISCV_SYSROOT iops64) > riscv64_iops.log
             echo -e "[jenkinfile INFO]: Running benchmark for Floating point Operations Per Seconds\n"
-            cat $(echo "1" | qemu-riscv64 flops64) > riscv64_flops.log
+            cat $(echo "1" | qemu-riscv64 -L $RISCV_SYSROOT flops64) > riscv64_flops.log
        '''
     }
     stage ('*** Cleaning ***'){
