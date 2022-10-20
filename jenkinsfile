@@ -1,6 +1,6 @@
 node('Runner2'){
     checkout scm
-    stage (*** Test on x86_64 ***){
+    stage ('*** Test on x86_64 ***'){
         sh'''#!/bin/bash
             echo -e "[jenkinsfile INFO]: Compiling for x86_64 architecture\n"
             make
@@ -10,7 +10,7 @@ node('Runner2'){
             ./flops64
         '''
     }
-    stage (*** Test on riscv64 (qemu) ***){
+    stage ('*** Test on riscv64 (qemu) ***'){
        sh'''#!/bin/bash
             echo -e "[jenkinsfile INFO]: Compiling for riscv_64 architecture\n"
             make
@@ -20,7 +20,7 @@ node('Runner2'){
             qemu-riscv64 flops64
        '''
     }
-    stage (*** Cleaning ***){
+    stage ('*** Cleaning ***'){
         sh'''#!\bin\bash
             echo -e "[jenkinsfile INFO]: Cleaning...\n"
             make clean
