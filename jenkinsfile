@@ -68,7 +68,8 @@ node('x86_runner2'){
         '''
     }
     }
+    node{
     stage ('*** Archiving Artifacts***') {
             archiveArtifacts artifacts:'*.log', onlyIfSuccessful: true
     }
-} 
+    }
