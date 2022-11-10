@@ -1,4 +1,4 @@
-node('Runner2'){
+node('x86_runner2'){
     checkout scm
     stage ('*** Cleaning ***'){
         sh'''#!/bin/bash
@@ -43,6 +43,7 @@ node('Runner2'){
         '''
     }
     stage ('*** Test on qemu linux ***'){
+    node ('riscv_runner1'){
        sh'''#!/bin/bash
             echo -e "[jenkinsfile INFO]: Compiling for riscv_64 linux architecture\n"
             make
@@ -51,6 +52,7 @@ node('Runner2'){
             echo -e "[jenkinfile INFO]: Running benchmark for Floating point Operations Per Seconds\n"
             echo $(echo "$(nproc)" | qemu-riscv64 -L $RISCV_SYSROOT flops64) > riscv64_linux_flops.log
        '''
+       }
     }
     stage ('*** Cleaning ***'){
         sh'''#!/bin/bash
