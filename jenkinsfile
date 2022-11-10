@@ -42,11 +42,12 @@ node('x86_runner2'){
             echo -e "[jenkinsfile INFO]: End of Job"
         '''
     }
-    stage ('*** Test on qemu linux ***'){
     node ('riscv64_runner1'){
-        stage (*** Checking Out ***){
+    stage (*** Checking Out ***){
             checkout scm
-        }
+    }
+    stage ('*** Test on qemu linux ***'){
+    
        sh'''#!/bin/bash
             echo -e "[jenkinsfile INFO]: Compiling for riscv_64 linux architecture\n"
             make
