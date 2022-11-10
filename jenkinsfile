@@ -1,47 +1,65 @@
-node('x86_runner2'){
-    stage (*** Checking out ***) {
-        checkout scm
+node('Runner2'){
+    checkout scm
+    stage ('*** Cleaning ***'){
+        sh'''#!/bin/bash
+            echo -e "[jenkinsfile INFO]: Cleaning  previous benchmarks (if any)...\n"
+            make clean
+            echo -e "[jenkinsfile INFO]: Cleaning Complete !"
+        '''
     }
-    stage (*** Test on x86_64 ***){
+    stage ('*** Test on x86_64 ***'){
         sh'''#!/bin/bash
             echo -e "[jenkinsfile INFO]: Compiling for x86_64 architecture\n"
             make
             echo -e "[jenkinsfile INFO]: Running benchmark for Integer Operations Per Second\n"
-            ./iops64
+            echo $(echo "$(nproc)" | ./iops64) > x86_64_iops.log # This passes the number of processor(s) as '1' to C script.
             echo -e "[jenkinsfile INFO]: Running benchmark for Floating point Operations Per Second\n"
-            ./flops64
+            echo $(echo "$(nproc)"|./flops64) > x86_64_flops.log
         '''
     }
-    stage (*** Test on qemu user-mode ***){
+    
+    stage ('*** Cleaning ***'){
+        sh'''#!/bin/bash
+            echo -e "[jenkinsfile INFO]: Cleaning for next benchmark...\n"
+            make clean
+            echo -e "[jenkinsfile INFO]: Cleaning Complete !"
+        '''
+    }
+    stage ('*** Test on qemu user-mode ***'){
        sh'''#!/bin/bash
             echo -e "[jenkinsfile INFO]: Compiling for riscv_64 architecture\n"
-            make
+            make CC=riscv64-unknown-linux-gnu-gcc 
             echo -e "[jenkinsfile INFO]: Running benchmark for Integer Operations Per Seconds\n"
-            qemu-riscv64 iops64
+            echo $(echo "$(nproc)" | qemu-riscv64 -L $RISCV_SYSROOT iops64) > riscv64_usermode_iops.log
             echo -e "[jenkinfile INFO]: Running benchmark for Floating point Operations Per Seconds\n"
-            qemu-riscv64 flops64
+            echo $(echo "$(nproc)" | qemu-riscv64 -L $RISCV_SYSROOT flops64) > riscv64_usermode_flops.log
        '''
     }
-    stage (*** Test on qemu linux ***){
-       node ('riscv64_runner'){
-       stage (*** Checking out ***) {
-         checkout scm
-       }
-       sh'''#!/bin/bash
-            echo -e "[jenkinsfile INFO]: Compiling for riscv_64 architecture\n"
-            make
-            echo -e "[jenkinsfile INFO]: Running benchmark for Integer Operations Per Seconds\n"
-            qemu-riscv64 iops64
-            echo -e "[jenkinfile INFO]: Running benchmark for Floating point Operations Per Seconds\n"
-            qemu-riscv64 flops64
-       '''
-       }
-    }
-    stage (*** Cleaning ***){
-        sh'''#!\bin\bash
+        stage ('*** Cleaning ***'){
+        sh'''#!/bin/bash
             echo -e "[jenkinsfile INFO]: Cleaning...\n"
             make clean
             echo -e "[jenkinsfile INFO]: End of Job"
         '''
     }
-}
+    stage ('*** Test on qemu linux ***'){
+       sh'''#!/bin/bash
+            echo -e "[jenkinsfile INFO]: Compiling for riscv_64 linux architecture\n"
+            make
+            echo -e "[jenkinsfile INFO]: Running benchmark for Integer Operations Per Seconds\n"
+            echo $(echo "$(nproc)" | ./iops64) > riscv64_linux_iops.log
+            echo -e "[jenkinfile INFO]: Running benchmark for Floating point Operations Per Seconds\n"
+            echo $(echo "$(nproc)" | qemu-riscv64 -L $RISCV_SYSROOT flops64) > riscv64_linux_flops.log
+       '''
+    }
+    stage ('*** Cleaning ***'){
+        sh'''#!/bin/bash
+            echo -e "[jenkinsfile INFO]: Cleaning for next benchmark...\n"
+            make clean
+            echo -e "[jenkinsfile INFO]: Cleaning Complete !"
+        '''
+    }
+    stage ('*** Archiving Artifacts***') {
+            archiveArtifacts artifacts:'*.log', onlyIfSuccessful: true
+    }
+} 
