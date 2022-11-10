@@ -43,7 +43,7 @@ node('x86_runner2'){
         '''
     }
     stage ('*** Test on qemu linux ***'){
-    node ('riscv_runner1'){
+    node ('riscv64_runner1'){
        sh'''#!/bin/bash
             echo -e "[jenkinsfile INFO]: Compiling for riscv_64 linux architecture\n"
             make
