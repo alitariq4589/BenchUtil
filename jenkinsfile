@@ -44,6 +44,9 @@ node('x86_runner2'){
     }
     stage ('*** Test on qemu linux ***'){
     node ('riscv64_runner1'){
+        stage (*** Checking Out ***){
+            checkout scm
+        }
        sh'''#!/bin/bash
             echo -e "[jenkinsfile INFO]: Compiling for riscv_64 linux architecture\n"
             make
@@ -52,7 +55,6 @@ node('x86_runner2'){
             echo -e "[jenkinfile INFO]: Running benchmark for Floating point Operations Per Seconds\n"
             echo $(echo "$(nproc)" | qemu-riscv64 -L $RISCV_SYSROOT flops64) > riscv64_linux_flops.log
        '''
-       }
     }
     stage ('*** Cleaning ***'){
         sh'''#!/bin/bash
@@ -60,6 +62,7 @@ node('x86_runner2'){
             make clean
             echo -e "[jenkinsfile INFO]: Cleaning Complete !"
         '''
+    }
     }
     stage ('*** Archiving Artifacts***') {
             archiveArtifacts artifacts:'*.log', onlyIfSuccessful: true
