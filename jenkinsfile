@@ -20,13 +20,6 @@ node('x86_runner2'){
         '''
     }
     
-    stage ('*** Cleaning ***'){
-        sh'''#!/bin/bash
-            echo -e "[jenkinsfile INFO]: Cleaning for next benchmark...\n"
-            make clean
-            echo -e "[jenkinsfile INFO]: Cleaning Complete !"
-        '''
-    }
     stage ('*** Test on qemu user-mode ***'){
        sh'''#!/bin/bash
             echo -e "[jenkinsfile INFO]: Compiling for riscv_64 architecture\n"
@@ -37,17 +30,20 @@ node('x86_runner2'){
             echo $(echo "$(nproc)" | qemu-riscv64 -L $RISCV_SYSROOT flops64) > riscv64_usermode_flops.log
        '''
     }
-        stage ('*** Cleaning ***'){
-        sh'''#!/bin/bash
-            echo -e "[jenkinsfile INFO]: Cleaning...\n"
-            make clean
-            echo -e "[jenkinsfile INFO]: End of Job"
-        '''
+    stage ('*** Archiving Artifacts***') {
+            archiveArtifacts artifacts:'*.log', onlyIfSuccessful: true
     }
-    }
-    node ('riscv64_runner1'){
+}
+node ('riscv64_runner1'){
     stage ('*** Checking Out ***'){
             checkout scm
+    }
+    stage ('*** Cleaning ***'){
+        sh'''#!/bin/bash
+            echo -e "[jenkinsfile INFO]: Cleaning for next benchmark...\n"
+            make clean
+            echo -e "[jenkinsfile INFO]: Cleaning Complete !"
+        '''
     }
     stage ('*** Test on qemu linux ***'){
     
@@ -60,16 +56,8 @@ node('x86_runner2'){
             echo $(echo "$(nproc)" | qemu-riscv64 -L $RISCV_SYSROOT flops64) > riscv64_linux_flops.log
        '''
     }
-    stage ('*** Cleaning ***'){
-        sh'''#!/bin/bash
-            echo -e "[jenkinsfile INFO]: Cleaning for next benchmark...\n"
-            make clean
-            echo -e "[jenkinsfile INFO]: Cleaning Complete !"
-        '''
-    }
-    }
-    node{
     stage ('*** Archiving Artifacts***') {
             archiveArtifacts artifacts:'*.log', onlyIfSuccessful: true
     }
-    }
+}
+    
