@@ -53,7 +53,7 @@ node ('riscv64_runner1'){
             echo -e "[jenkinsfile INFO]: Running benchmark for Integer Operations Per Seconds\n"
             echo $(echo "$(nproc)" | ./iops64) > riscv64_linux_iops.log
             echo -e "[jenkinfile INFO]: Running benchmark for Floating point Operations Per Seconds\n"
-            echo $(echo "$(nproc)" | qemu-riscv64 -L $RISCV_SYSROOT flops64) > riscv64_linux_flops.log
+            echo $(echo "$(nproc)" | ./flops64) > riscv64_linux_flops.log
        '''
     }
     stage ('*** Archiving Artifacts***') {
