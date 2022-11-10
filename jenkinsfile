@@ -1,5 +1,7 @@
 node('x86_runner2'){
-    checkout scm
+    stage ('*** Checking out ***'){
+        checkout scm
+    }
     stage ('*** Cleaning ***'){
         sh'''#!/bin/bash
             echo -e "[jenkinsfile INFO]: Cleaning  previous benchmarks (if any)...\n"
@@ -44,7 +46,7 @@ node('x86_runner2'){
     }
     }
     node ('riscv64_runner1'){
-    stage (*** Checking Out ***){
+    stage ('*** Checking Out ***'){
             checkout scm
     }
     stage ('*** Test on qemu linux ***'){
